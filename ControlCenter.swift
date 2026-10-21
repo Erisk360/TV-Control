@@ -37,6 +37,15 @@ final class FloatingControlPanel:NSPanel {
     private var trackingMenu=false
     var showWindow:(()->Void)?
     func applicationDidFinishLaunching(_ notification:Notification) {
+#if !CONTROL_CENTER_ONLY
+        // The companion is the only owner of the menu-bar item. Launch it when
+        // needed so the full app never creates a duplicate Control Center.
+        if NSRunningApplication.runningApplications(withBundleIdentifier:"nl.dextiny.thuis.control.center").isEmpty,
+           let url=NSWorkspace.shared.urlForApplication(withBundleIdentifier:"nl.dextiny.thuis.control.center") {
+            NSWorkspace.shared.openApplication(at:url,configuration:.init())
+        }
+        return
+#endif
         let item=NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength);self.item=item
         if let button=item.button {
             let image=NSImage(systemSymbolName:"slider.horizontal.3",accessibilityDescription:"Thuis Control");image?.isTemplate=true
