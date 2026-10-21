@@ -16,7 +16,7 @@ struct TVDevice:Codable,Identifiable,Equatable,Sendable {
     var config:TVConfig {TVConfig(host:host,mac:mac)}
     var websocketPort:Int {port > 0 ? port : kind == .samsung ? 8002 : 3001}
     var valid:Bool {config.valid && !name.trimmingCharacters(in:.whitespaces).isEmpty && (mac.isEmpty || mac.range(of:"^(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$",options:.regularExpression) != nil) && (port == 0 || (1...65535).contains(port))}
-    static func initial()->TVDevice {let c=TVConfig.saved;return TVDevice(id:"original-lg",name:"Woonkamer",host:c.host,mac:c.mac,kind:.rootedLG,model:"LG C2 · 48″")}
+    static func initial()->TVDevice {let c=TVConfig.saved;return TVDevice(id:"default-lg",name:"LG webOS",host:c.host,mac:c.mac,kind:.lg,model:"")}
 }
 enum PairingVault {
     static var memoryOnly=false
