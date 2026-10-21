@@ -1,0 +1,16 @@
+.DS_Store
+*.app/
+*.dSYM/
+*.xcuserstate
+.build/
+DerivedData/
+backups/
+tests/fixture-log.json
+*.log
+*.json
+preview*.png
+*.icns
+verify
+verify-model
+root-key
+known_hosts
