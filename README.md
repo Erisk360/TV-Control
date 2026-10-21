@@ -1,6 +1,6 @@
 # Thuis Control
 
-Thuis Control is a native macOS app for controlling LG webOS and Samsung TVs on your local network. It includes a full app window and a separate menu-bar Control Center.
+Thuis Control is a native macOS app for controlling LG webOS and Samsung TVs on your local network. Its full window and menu-bar Control Center run in one app.
 
 ## What it does
 
@@ -29,10 +29,9 @@ Never commit `root-key`, `known_hosts`, built `.app` bundles, pairing tokens, or
 ```sh
 ./build.sh
 open "Thuis Control.app"
-open "Thuis Control Center.app"
 ```
 
-Add a TV through the connection/settings screen, then choose **Connect** and approve the pairing request on the TV. The menu-bar Control Center is a separate process, so it keeps running when the main window app is quit.
+Add a TV through the connection/settings screen, then choose **Connect** and approve the pairing request on the TV. Closing the main window keeps the menu-bar Control Center available.
 
 ## Rooted LG support
 
