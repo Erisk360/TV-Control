@@ -2,16 +2,6 @@ import SwiftUI
 import AppKit
 
 #if !TV_TEST
-#if CONTROL_CENTER_ONLY
-@main struct ThuisControlCenterApp: App {
-    @NSApplicationDelegateAdaptor(ControlDelegate.self) private var delegate
-    var body: some Scene {
-        // The companion owns the menu-bar panel and deliberately has no main
-        // window. It therefore remains alive when the full Control app quits.
-        Settings { EmptyView() }
-    }
-}
-#else
 @main struct ThuisControlApp: App {
     @NSApplicationDelegateAdaptor(ControlDelegate.self) private var delegate
     var body: some Scene {
@@ -23,7 +13,6 @@ import AppKit
         .commands { CommandGroup(after:.newItem) {Button("Ververs tv") {Task {await delegate.model.refresh(includeApps:true)}}.keyboardShortcut("r");Button("Open Thuis op tv") {delegate.model.home()}.keyboardShortcut("h",modifiers:[.command,.shift])} }
     }
 }
-#endif
 final class FloatingControlPanel:NSPanel {
     override var canBecomeKey:Bool {true}
     override var canBecomeMain:Bool {false}
@@ -37,15 +26,6 @@ final class FloatingControlPanel:NSPanel {
     private var trackingMenu=false
     var showWindow:(()->Void)?
     func applicationDidFinishLaunching(_ notification:Notification) {
-#if !CONTROL_CENTER_ONLY
-        // The companion is the only owner of the menu-bar item. Launch it when
-        // needed so the full app never creates a duplicate Control Center.
-        if NSRunningApplication.runningApplications(withBundleIdentifier:"nl.dextiny.thuis.control.center").isEmpty,
-           let url=NSWorkspace.shared.urlForApplication(withBundleIdentifier:"nl.dextiny.thuis.control.center") {
-            NSWorkspace.shared.openApplication(at:url,configuration:.init())
-        }
-        return
-#endif
         let item=NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength);self.item=item
         if let button=item.button {
             let image=NSImage(systemSymbolName:"slider.horizontal.3",accessibilityDescription:"Thuis Control");image?.isTemplate=true
