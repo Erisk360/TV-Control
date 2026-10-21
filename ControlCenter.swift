@@ -307,14 +307,30 @@ struct AppArtwork: View {
     var image:NSImage?
     var size:CGFloat=58
     private var icon:NSImage? {image ?? Bundle.main.url(forResource:app.title.lowercased()=="youtube" ? "youtube.leanback.v4" : app.id,withExtension:"png",subdirectory:"icons").flatMap {NSImage(contentsOf:$0)}}
-    private var background:Color {app.title.lowercased()=="netflix" || app.title.lowercased().contains("apple tv") || app.id == "netflix" || app.id == "com.apple.appletv" ? .black : app.id == "youtube.leanback.v4" ? .white : Color.white.opacity(0.075)}
+    private var name:String {app.title.lowercased()}
+    private var background:Color {
+        if name == "netflix" || name.contains("apple tv") || app.id == "netflix" || app.id == "com.apple.appletv" {return .black}
+        if name == "youtube" || app.id == "youtube.leanback.v4" {return .white}
+        if name.contains("prime") {return Color(red:0.03,green:0.35,blue:0.62)}
+        if name.contains("disney") {return Color(red:0.02,green:0.08,blue:0.30)}
+        if name == "spotify" {return Color(red:0.11,green:0.74,blue:0.34)}
+        return Color.white.opacity(0.075)
+    }
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius:size*0.23,style:.continuous).fill(background)
             if app.id == "netflix" || app.title.lowercased()=="netflix" {
                 NetflixMark().frame(width:size*0.34,height:size*0.60)
-            } else if app.id == "com.apple.appletv" || app.title.lowercased().contains("apple tv") {
+            } else if app.id == "com.apple.appletv" || name.contains("apple tv") {
                 HStack(spacing:1) {Image(systemName:"apple.logo").font(.system(size:size*0.32));Text("tv").font(.system(size:size*0.40,weight:.medium))}.foregroundStyle(.white)
+            } else if name == "youtube" || app.id == "youtube.leanback.v4" {
+                RoundedRectangle(cornerRadius:size*0.13,style:.continuous).fill(Color(red:0.96,green:0.05,blue:0.09)).frame(width:size*0.62,height:size*0.44).overlay(Image(systemName:"play.fill").font(.system(size:size*0.21,weight:.bold)).foregroundStyle(.white))
+            } else if name.contains("prime") {
+                VStack(spacing:-size*0.03) {Text("prime").font(.system(size:size*0.25,weight:.bold)).foregroundStyle(.white);Text("video").font(.system(size:size*0.16,weight:.medium)).foregroundStyle(.white.opacity(0.92));Image(systemName:"smile").font(.system(size:size*0.22,weight:.medium)).foregroundStyle(Color(red:0.1,green:0.78,blue:1))}
+            } else if name.contains("disney") {
+                ZStack {Text("Disney").font(.system(size:size*0.23,weight:.medium,design:.serif)).italic().foregroundStyle(.white);Text("+").font(.system(size:size*0.18,weight:.bold)).foregroundStyle(.white).offset(x:size*0.27,y:-size*0.08);Capsule().stroke(Color(red:0.35,green:0.73,blue:1),lineWidth:max(1,size*0.018)).frame(width:size*0.70,height:size*0.23).offset(y:-size*0.16)}
+            } else if name == "spotify" {
+                Circle().fill(.black).frame(width:size*0.61,height:size*0.61).overlay(VStack(spacing:size*0.045) {ForEach([0.46,0.39,0.32],id:\.self) {width in Capsule().fill(Color(red:0.11,green:0.74,blue:0.34)).frame(width:size*width,height:max(1.5,size*0.045)).rotationEffect(.degrees(8))}}.offset(y:-size*0.015))
             } else if let icon {Image(nsImage:icon).resizable().scaledToFit().padding(size*0.10)} else {Image(systemName:["nl.dextiny.thuis","__home"].contains(app.id) ? "house.fill" : app.id.contains("settings") ? "gearshape.fill" : app.id.contains("hdmi") ? "cable.connector" : "app.fill").font(.system(size:size*0.44,weight:.regular)).foregroundStyle(app.id == "nl.dextiny.thuis" ? Color(red:0.69,green:0.70,blue:1) : .white.opacity(0.8))}
         }.frame(width:size,height:size).clipShape(RoundedRectangle(cornerRadius:size*0.23,style:.continuous)).overlay(RoundedRectangle(cornerRadius:size*0.23,style:.continuous).strokeBorder(.white.opacity(0.1),lineWidth:0.6))
     }
